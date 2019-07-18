@@ -3,7 +3,7 @@
 
 program define checkinvariant, rclass
 
-syntax varlist, by(varlist) [QUIet VERBose]
+syntax varlist, by(varlist) [QUIet VERBose ALLOWMISSing]
 
 if "`verbose'" != "" & "`quiet'" != "" {
 	di as error "Pick one or none between quiet and verbose."
@@ -13,17 +13,37 @@ if "`verbose'" != "" & "`quiet'" != "" {
 * exclude the by variables from the list if they are passed (e.g. in _all)
 local varlist: list varlist - by
 
+tempvar originalsort
+gen `originalsort' = _n
+
 * compute results
 foreach var in `varlist' {
-	tempvar _Unique
-	qui gunique `var', by(`by') gen(`_Unique') replace
-	cap confirm variable `_Unique'
-	if c(rc) {
-		di as error "It is likely that `var' only has missing observations and so it will be skipped."
-		continue
+	qui hashsort `by'
+	tempvar first_value
+	*gegen doesn't take strings as input
+	if substr("`:type `var''" , 1, 3) == "str" {
+		tempvar grouped_string
+		gegen `grouped_string' = group(`var')
+		by `by': gegen `first_value' = firstnm(`grouped_string')
+		if "`allowmissing'" != "" {
+			local missing_condition_str " | mi(`grouped_string')"
+		}
+		else {
+			local missing_condition_str ""
+		}
+		cap assert `grouped_string' == `first_value' `missing_condition_str'
+	}
+	else {
+		by `by': gegen `first_value' = firstnm(`var')
+		if "`allowmissing'" != "" {
+			local missing_condition_var " | mi(`var')"
+		}
+		else {
+			local missing_condition_str ""
+		}
+		cap assert `var' == `first_value' `missing_condition_var'
 	}
 
-	cap assert `_Unique' == 1 | `_Unique' == 0
 	if c(rc) == 0 {
 		if "`verbose'" != "" {
 			di as result "Invariant within `by': `var'"
@@ -37,6 +57,8 @@ foreach var in `varlist' {
 		local   variantvarlist   `variantvarlist' `var'
 	}
 }
+
+qui hashsort `originalsort'
 
 if "`quiet'" == "" {
 	if "`invariantvarlist'" != "" {
@@ -56,7 +78,7 @@ if "`quiet'" == "" {
 return local invariantvarlist = "`invariantvarlist'"
 return local   variantvarlist = "`variantvarlist'"
 
-return local num_invariant : word count `invariantvarlist'
-return local num_variant   : word count   `variantvarlist'
+return local numinvariant : word count `invariantvarlist'
+return local numvariant   : word count   `variantvarlist'
 
 end
