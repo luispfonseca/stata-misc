@@ -14,7 +14,7 @@ if "`allowmissing'" == "" & "`fill'" != "" {
 local varlist: list varlist - by
 
 tempvar originalsort
-gen `originalsort' = _n
+qui gen `originalsort' = _n
 
 * compute results
 foreach var in `varlist' {
@@ -24,7 +24,7 @@ foreach var in `varlist' {
 	*gegen doesn't take strings as input
 	if substr("`:type `var''" , 1, 3) == "str" {
 		tempvar grouped_string
-		gegen `grouped_string' = group(`var')
+		qui gegen `grouped_string' = group(`var')
 		local finalvar `grouped_string'
 	}
 	else {
@@ -41,24 +41,25 @@ foreach var in `varlist' {
 	cap assert `finalvar' == `first_value' `missing_condition'
 
 	if c(rc) == 0 {
+		if "`verbose'" != "" {
+			di as result "Invariant within `by': `var'"
+		}
 		local invariantvarlist `invariantvarlist' `var'
 		if "`fill'" != "" & "`allowmissing'" != "" {
 			cap assert `finalvar' == `first_value'
 			if c(rc) {
-				* missing numbers are sorted last by default, but strings are first
+				* gegen doesn't take strings as input, so I have to recover
+				* the nonmissing values of strings in an inefficient way
 				if substr("`:type `var''" , 1, 3) == "str" {
 					qui hashsort `by' - `var'
+					qui by `by': replace `var' = `var'[1]
 				}
-				else {
-					qui hashsort `by' `var'
+				else { // for numeric variables, can recover previously computed
+					qui replace `var' = `first_value' if mi(`var')
 				}
-				qui by `by': replace `var' = `var'[1]
-				local filledvarlist filledvarlist `var'
+				local filledvarlist `filledvarlist' `var'
 				local invariantvarlist: list invariantvarlist - var
 			}
-		}
-		if "`verbose'" != "" {
-			di as result "Invariant within `by': `var'"
 		}
 	}
 	else {
