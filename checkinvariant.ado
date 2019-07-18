@@ -38,16 +38,15 @@ foreach var in `varlist' {
 
 	by `by': gegen `first_value' = firstnm(`finalvar')
 
+	local missing_condition ""
 	if "`allowmissing'" != "" {
 		local missing_condition " | mi(`finalvar')"
 	}
-	else {
-		local missing_condition ""
-	}
-
+	
 	cap assert `finalvar' == `first_value' `missing_condition'
 
 	if c(rc) == 0 {
+		local invariantvarlist `invariantvarlist' `var'
 		if "`fill'" != "" & "`allowmissing'" != "" {
 			cap assert `finalvar' == `first_value'
 			if c(rc) {
@@ -60,12 +59,12 @@ foreach var in `varlist' {
 				}
 				qui by `by': replace `var' = `var'[1]
 				local filledvarlist filledvarlist `var'
+				local invariantvarlist: list invariantvarlist - var
 			}
 		}
 		if "`verbose'" != "" {
 			di as result "Invariant within `by': `var'"
 		}
-		local invariantvarlist `invariantvarlist' `var'
 	}
 	else {
 		if "`verbose'" != "" {
@@ -91,7 +90,7 @@ if "`quiet'" == "" {
 		}
 	}
 	if "`filledvarlist'" != "" {
-		di as result "Variables missing values were replaced by unique non-missing value:"
+		di as result "Variables whose missing values were replaced by unique non-missing value:"
 		foreach var in `filledvarlist' {
 			di as result "`var'"
 		}
