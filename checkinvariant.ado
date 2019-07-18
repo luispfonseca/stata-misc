@@ -3,12 +3,7 @@
 
 program define checkinvariant, rclass
 
-syntax varlist, by(varlist) [QUIet VERBose ALLOWMISSing fill]
-
-if "`verbose'" != "" & "`quiet'" != "" {
-	di as error "Pick one or none between quiet and verbose."
-	error
-}
+syntax varlist, by(varlist) [VERBose ALLOWMISSing fill]
 
 if "`allowmissing'" == "" & "`fill'" != "" {
 	di as error "The fill option can only be called with the allowmissing option."
@@ -42,7 +37,7 @@ foreach var in `varlist' {
 	if "`allowmissing'" != "" {
 		local missing_condition " | mi(`finalvar')"
 	}
-	
+
 	cap assert `finalvar' == `first_value' `missing_condition'
 
 	if c(rc) == 0 {
@@ -76,24 +71,22 @@ foreach var in `varlist' {
 
 qui hashsort `originalsort'
 
-if "`quiet'" == "" {
-	if "`invariantvarlist'" != "" {
-		di as result "Invariant within `by':"
-		foreach var in `invariantvarlist' {
-			di as result "`var'"
-		}
+if "`invariantvarlist'" != "" {
+	di as result "Invariant within `by':"
+	foreach var in `invariantvarlist' {
+		di as result "`var'"
 	}
-	if "`variantvarlist'" != "" {
-		di as result "Variant within `by':"
-		foreach var in `variantvarlist' {
-			di as result "`var'"
-		}
+}
+if "`variantvarlist'" != "" {
+	di as result "Variant within `by':"
+	foreach var in `variantvarlist' {
+		di as result "`var'"
 	}
-	if "`filledvarlist'" != "" {
-		di as result "Variables whose missing values were replaced by unique non-missing value:"
-		foreach var in `filledvarlist' {
-			di as result "`var'"
-		}
+}
+if "`filledvarlist'" != "" {
+	di as result "Variables whose missing values were replaced by unique non-missing value:"
+	foreach var in `filledvarlist' {
+		di as result "`var'"
 	}
 }
 
