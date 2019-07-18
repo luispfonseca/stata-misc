@@ -39,7 +39,7 @@ foreach var in `varlist' {
 			local missing_condition_var " | mi(`var')"
 		}
 		else {
-			local missing_condition_str ""
+			local missing_condition_var ""
 		}
 		cap assert `var' == `first_value' `missing_condition_var'
 	}
