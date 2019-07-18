@@ -3,7 +3,7 @@ This repository holds small Stata commands I've either written for myself or bor
 
 To install one of the commands, run:
 ```
-net install commandname, from("https://github.com/luispfonseca/stata-misc/") replace
+net install commandname, from("https://raw.githubusercontent.com/luispfonseca/stata-misc/master/") replace
 ```
 
 ## Author
