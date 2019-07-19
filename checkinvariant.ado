@@ -91,6 +91,9 @@ if "`filledvarlist'" != "" {
 	}
 }
 
+return local varlist = "`varlist'"
+return local by      = "`by'"
+
 return local invariantvarlist = "`invariantvarlist'"
 return local   variantvarlist =   "`variantvarlist'"
 return local    filledvarlist =    "`filledvarlist'"
