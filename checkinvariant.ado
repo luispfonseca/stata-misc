@@ -3,10 +3,15 @@
 
 program define checkinvariant, rclass
 
-syntax varlist, by(varlist) [VERBose ALLOWMISSing fill]
+syntax varlist, by(varlist) [ALLOWMISSing fill DROPINVARiant DROPVARiant VERBose]
 
 if "`allowmissing'" == "" & "`fill'" != "" {
 	di as error "The fill option can only be called with the allowmissing option."
+	error 198
+}
+
+if "`dropinvariant'" != "" & "`dropvariant'" != "" {
+	di as error "You probably want to choose only one between dropinvariant and dropvariant."
 	error 198
 }
 
@@ -94,14 +99,34 @@ if "`filledvarlist'" != "" {
 return local varlist = "`varlist'"
 return local by      = "`by'"
 
-return local invariantvarlist = "`invariantvarlist'"
-return local   variantvarlist =   "`variantvarlist'"
-return local    filledvarlist =    "`filledvarlist'"
+return local invariantvarlist "`invariantvarlist'"
+return local   variantvarlist   "`variantvarlist'"
+return local    filledvarlist    "`filledvarlist'"
 
 return scalar numinvariant = `:word count `invariantvarlist''
 return scalar   numvariant = `:word count   `variantvarlist''
 if "`fill'" != "" & "`allowmissing'" != "" {
 return scalar numfilled    = `:word count    `filledvarlist''
+}
+
+if "`dropinvariant'" != "" {
+	if "`invariantvarlist'" != "" {
+		di as result "Dropping invariant variables:"
+		di as result "`invariantvarlist'"
+		cap drop `invariantvarlist'
+	}
+	if "`filledvarlist'" != "" {
+		di as result "Dropping filled variables:"
+		di as result "`filledvarlist'"
+		cap drop `filledvarlist'
+	}
+}
+if "`dropvariant'" != "" {
+	if "`variantvarlist'" != "" {
+		di as result "Dropping variant variables:"
+		di as result "`variantvarlist'"
+		cap drop `variantvarlist'
+	}
 }
 
 end
