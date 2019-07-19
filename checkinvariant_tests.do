@@ -18,31 +18,31 @@ gen   variantstringmissing  =  variantstring if mod(_n,4)
 
 * Standard tests
 checkinvariant _all, by(id) verbose
-assert "`r(invariantvarlist)'" == "invariantnumber invariantstring"
-assert   "`r(variantvarlist)'" == "variantnumber invariantnumbermissing variantnumbermissing variantstring invariantstringmissing variantstringmissing"
+assert r(invariantvarlist) == "invariantnumber invariantstring"
+assert   r(variantvarlist) == "variantnumber invariantnumbermissing variantnumbermissing variantstring invariantstringmissing variantstringmissing"
 
 checkinvariant _all, by(id) verbose allowmissing
-assert "`r(invariantvarlist)'" == "invariantnumber invariantnumbermissing invariantstring invariantstringmissing"
-assert   "`r(variantvarlist)'" == "variantnumber variantnumbermissing variantstring variantstringmissing"
+assert r(invariantvarlist) == "invariantnumber invariantnumbermissing invariantstring invariantstringmissing"
+assert   r(variantvarlist) == "variantnumber variantnumbermissing variantstring variantstringmissing"
 
 * Testing when always missing
 gen alwaysmissnumber = .
 gen alwaysmissstring = ""
 
 checkinvariant alwaysmiss*, by(id) verbose
-assert "`r(invariantvarlist)'" == "alwaysmissnumber alwaysmissstring"
-assert "`r(numvariant)'" == "0"
+assert r(invariantvarlist) == "alwaysmissnumber alwaysmissstring"
+assert r(numvariant) == 0
 checkinvariant alwaysmiss*, by(id) verbose allowmissing
-assert "`r(invariantvarlist)'" == "alwaysmissnumber alwaysmissstring"
-assert "`r(numvariant)'" == "0"
+assert r(invariantvarlist) == "alwaysmissnumber alwaysmissstring"
+assert r(numvariant) == 0
 
 * Testing the fill option
 checkinvariant *miss*, by(id) verbose allowmissing fill
-assert "`r(numfilled)'" == "2"
-assert "`r(numvariant)'" == "2"
-assert "`r(numinvariant)'" == "2"
+assert r(numfilled) == 2
+assert r(numvariant) == 2
+assert r(numinvariant) == 2
 
 checkinvariant invariantnumbermissing invariantstringmissing, by(id)
-assert "`r(numvariant)'" == "0"
+assert r(numvariant) == 0
 assert mi(variantnumbermissing) if !mod(_n,4)
 assert mi(variantnumbermissing) if !mod(_n,4)

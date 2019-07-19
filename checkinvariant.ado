@@ -95,10 +95,10 @@ return local invariantvarlist = "`invariantvarlist'"
 return local   variantvarlist =   "`variantvarlist'"
 return local    filledvarlist =    "`filledvarlist'"
 
-return local numinvariant : word count `invariantvarlist'
-return local numvariant   : word count   `variantvarlist'
+return scalar numinvariant = `:word count `invariantvarlist''
+return scalar   numvariant = `:word count   `variantvarlist''
 if "`fill'" != "" & "`allowmissing'" != "" {
-	return local numfilled    : word count    `filledvarlist'
+return scalar numfilled    = `:word count    `filledvarlist''
 }
 
 end
