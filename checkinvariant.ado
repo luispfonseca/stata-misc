@@ -23,8 +23,6 @@ qui gen `originalsort' = _n
 
 * compute results
 foreach var in `varlist' {
-	qui hashsort `by'
-	tempvar first_value
 
 	*gegen doesn't take strings as input
 	if substr("`:type `var''" , 1, 3) == "str" {
@@ -36,7 +34,8 @@ foreach var in `varlist' {
 		local finalvar `var'
 	}
 
-	by `by': gegen `first_value' = firstnm(`finalvar')
+	tempvar first_value
+	gegen `first_value' = firstnm(`finalvar'), by(`by')
 
 	local missing_condition ""
 	if "`allowmissing'" != "" {
