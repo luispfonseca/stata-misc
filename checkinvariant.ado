@@ -156,7 +156,7 @@ if "`keepvariant'" != "" {
 	if "`variantvarlist'" != "" {
 		di as result "Keeping variant variables:"
 		di as result "`variantvarlist'"
-		local tokeep `filledvarlist'
+		local tokeep `variantvarlist'
 	}
 	local tokeep `by' `tokeep'
 	keep `tokeep'
