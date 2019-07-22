@@ -3,15 +3,24 @@
 
 program define checkinvariant, rclass
 
-syntax varlist, by(varlist) [ALLOWMISSing fill DROPINVARiant DROPVARiant VERBose]
+syntax varlist, by(varlist) [ALLOWMISSing fill DROPINVARiant DROPVARiant KEEPINVARiant KEEPVARiant VERBose]
 
 if "`allowmissing'" == "" & "`fill'" != "" {
 	di as error "The fill option can only be called with the allowmissing option."
 	error 198
 }
-
 if "`dropinvariant'" != "" & "`dropvariant'" != "" {
-	di as error "You probably want to choose only one between dropinvariant and dropvariant."
+	di as error "Choose only one between dropinvariant and dropvariant."
+	error 198
+}
+if "`keepinvariant'" != "" & "`keepvariant'" != "" {
+	di as error "Choose only one between keepinvariant and keepvariant."
+	error 198
+}
+local dropcondition "`dropvariant'`dropinvariant'"
+local keepcondition "`keepvariant'`keepinvariant'"
+if "`dropcondition'" != "" & "`keepcondition'" != "" {
+	di as error "Choose only one condition between keep and drop."
 	error 198
 }
 
@@ -105,27 +114,52 @@ return local    filledvarlist    "`filledvarlist'"
 return scalar numinvariant = `:word count `invariantvarlist''
 return scalar   numvariant = `:word count   `variantvarlist''
 if "`fill'" != "" & "`allowmissing'" != "" {
-return scalar numfilled    = `:word count    `filledvarlist''
+	return scalar numfilled    = `:word count    `filledvarlist''
 }
 
 if "`dropinvariant'" != "" {
 	if "`invariantvarlist'" != "" {
 		di as result "Dropping invariant variables:"
 		di as result "`invariantvarlist'"
-		cap drop `invariantvarlist'
+		local todrop `invariantvarlist'
 	}
 	if "`filledvarlist'" != "" {
 		di as result "Dropping filled variables:"
 		di as result "`filledvarlist'"
-		cap drop `filledvarlist'
+		local todrop `todrop' `filledvarlist'
 	}
+	cap drop `todrop'
 }
 if "`dropvariant'" != "" {
 	if "`variantvarlist'" != "" {
 		di as result "Dropping variant variables:"
 		di as result "`variantvarlist'"
-		cap drop `variantvarlist'
+		drop `variantvarlist'
 	}
+}
+
+if "`keepinvariant'" != "" {
+	if "`invariantvarlist'" != "" {
+		di as result "Keeping invariant variables:"
+		di as result "`invariantvarlist'"
+		local tokeep `invariantvarlist'
+	}
+	if "`filledvarlist'" != "" {
+		di as result "Keeping filled variables:"
+		di as result "`filledvarlist'"
+		local tokeep `tokeep' `filledvarlist'
+	}
+	local tokeep `by' `tokeep'
+	keep `tokeep'
+}
+if "`keepvariant'" != "" {
+	if "`variantvarlist'" != "" {
+		di as result "Keeping variant variables:"
+		di as result "`variantvarlist'"
+		local tokeep `filledvarlist'
+	}
+	local tokeep `by' `tokeep'
+	keep `tokeep'
 }
 
 end
