@@ -12,6 +12,9 @@ if c(rc) {
 	error
 }
 
+* ensure no duplicates in the varlist to loop over
+local varlist : list uniq varlist
+
 * exclude the by variables from the list if they are passed (e.g. in _all)
 local varlist: list varlist - by
 
