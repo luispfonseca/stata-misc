@@ -16,12 +16,8 @@ local strvars "`r(varlist)'"
 
 * not sure if the most efficient way
 foreach var of varlist `strvars' {
-	if substr("`:type `var''" , 1, 3) == "str" {
-		tempvar length_var
-		gen `length_var' = length(`var')
-		qui sum `length_var'
-		format `var' %`r(max)'s
-	}
+	local str_length = substr("`:type `var''" , 4, .)
+	format `var' %`str_length's
 }
 
 end
