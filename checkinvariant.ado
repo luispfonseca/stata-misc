@@ -3,7 +3,7 @@
 
 program define checkinvariant, rclass
 
-syntax varlist, by(varlist) [ALLOWMISSing fill DROPINVARiant DROPVARiant KEEPINVARiant KEEPVARiant VERBose]
+syntax [varlist], [by(varlist) ALLOWMISSing fill DROPINVARiant DROPVARiant KEEPINVARiant KEEPVARiant VERBose]
 
 if "`allowmissing'" == "" & "`fill'" != "" {
 	di as error "The fill option can only be called with the allowmissing option."
@@ -22,6 +22,15 @@ local keepcondition "`keepvariant'`keepinvariant'"
 if "`dropcondition'" != "" & "`keepcondition'" != "" {
 	di as error "Choose only one condition between keep and drop."
 	error 198
+}
+
+* if no varlist is passed, assume all variables are passed
+if "`varlist'" == "" {
+	local varlist _all
+}
+* display " within by_variables" only if by is not empty
+if "`by'" != "" {
+	local within_string " within "
 }
 
 * ensure no duplicates in the varlist to loop over
@@ -58,7 +67,7 @@ foreach var in `varlist' {
 
 	if c(rc) == 0 {
 		if "`verbose'" != "" {
-			di as result "Invariant within `by': `var'"
+			di as result "Invariant`within_string'`by': `var'"
 		}
 		local invariantvarlist `invariantvarlist' `var'
 		if "`fill'" != "" & "`allowmissing'" != "" {
@@ -80,7 +89,7 @@ foreach var in `varlist' {
 	}
 	else {
 		if "`verbose'" != "" {
-			di as result "  Variant within `by': `var'"
+			di as result "  Variant`within_string'`by': `var'"
 		}
 		local   variantvarlist   `variantvarlist' `var'
 	}
@@ -89,11 +98,11 @@ foreach var in `varlist' {
 qui hashsort `originalsort'
 
 if "`invariantvarlist'" != "" {
-	di as result "Invariant within `by':"
+	di as result "Invariant`within_string'`by':"
 	di as result "`invariantvarlist'"
 }
 if "`variantvarlist'" != "" {
-	di as result "Variant within `by':"
+	di as result "Variant`within_string'`by':"
 	di as result "`variantvarlist'"
 }
 if "`filledvarlist'" != "" {

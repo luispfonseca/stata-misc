@@ -13,7 +13,7 @@
 {title:Syntax}
 
 {p 8 15 2}
-{opt checkinvariant} {it:varlist} , by({it:varlist}) [{it:options}]
+{opt checkinvariant} [{it:varlist} , by({it:varlist}) {it:options}]
 
 {synoptset 20 tabbed}{...}
 {synopthdr}
