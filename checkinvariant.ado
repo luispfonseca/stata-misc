@@ -90,21 +90,15 @@ qui hashsort `originalsort'
 
 if "`invariantvarlist'" != "" {
 	di as result "Invariant within `by':"
-	foreach var in `invariantvarlist' {
-		di as result "`var'"
-	}
+	di as result "`invariantvarlist'"
 }
 if "`variantvarlist'" != "" {
 	di as result "Variant within `by':"
-	foreach var in `variantvarlist' {
-		di as result "`var'"
-	}
+	di as result "`variantvarlist'"
 }
 if "`filledvarlist'" != "" {
 	di as result "Variables whose missing values were replaced by unique non-missing value:"
-	foreach var in `filledvarlist' {
-		di as result "`var'"
-	}
+	di as result "`filledvarlist'"
 }
 
 return local varlist = "`varlist'"
@@ -122,34 +116,29 @@ if "`fill'" != "" & "`allowmissing'" != "" {
 
 if "`dropinvariant'" != "" {
 	if "`invariantvarlist'" != "" {
-		di as result "Dropping invariant variables:"
-		di as result "`invariantvarlist'"
+		di as result "Dropping invariant variables"
 		local todrop `invariantvarlist'
 	}
 	if "`filledvarlist'" != "" {
-		di as result "Dropping filled variables:"
-		di as result "`filledvarlist'"
+		di as result "Dropping filled variables"
 		local todrop `todrop' `filledvarlist'
 	}
 	cap drop `todrop'
 }
 if "`dropvariant'" != "" {
 	if "`variantvarlist'" != "" {
-		di as result "Dropping variant variables:"
-		di as result "`variantvarlist'"
+		di as result "Dropping variant variables"
 		drop `variantvarlist'
 	}
 }
 
 if "`keepinvariant'" != "" {
 	if "`invariantvarlist'" != "" {
-		di as result "Keeping invariant variables:"
-		di as result "`invariantvarlist'"
+		di as result "Keeping invariant variables"
 		local tokeep `invariantvarlist'
 	}
 	if "`filledvarlist'" != "" {
-		di as result "Keeping filled variables:"
-		di as result "`filledvarlist'"
+		di as result "Keeping filled variables"
 		local tokeep `tokeep' `filledvarlist'
 	}
 	local tokeep `by' `tokeep'
@@ -157,8 +146,7 @@ if "`keepinvariant'" != "" {
 }
 if "`keepvariant'" != "" {
 	if "`variantvarlist'" != "" {
-		di as result "Keeping variant variables:"
-		di as result "`variantvarlist'"
+		di as result "Keeping variant variables"
 		local tokeep `variantvarlist'
 	}
 	local tokeep `by' `tokeep'
