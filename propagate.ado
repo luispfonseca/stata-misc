@@ -3,13 +3,18 @@
 
 program define propagate
 
-syntax varlist, by(varlist)
+syntax [varlist], [by(varlist)]
 
 cap which gtools
 if c(rc) {
 	di as error "This command requires the gtools command."
 	di as error "Follow the instructions in https://github.com/mcaceresb/stata-gtools to install it."
 	error
+}
+
+* if no varlist is passed, assume all variables are passed
+if "`varlist'" == "" {
+	local varlist _all
 }
 
 * ensure no duplicates in the varlist to loop over
