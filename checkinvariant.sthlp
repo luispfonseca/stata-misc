@@ -5,6 +5,9 @@
 {vieweralsosee "[R] help" "help help"}{...}
 {viewerjumpto "Syntax" "checkinvariant##syntax"}{...}
 {viewerjumpto "Description" "checkinvariant##description"}{...}
+{viewerjumpto "Examples" "checkinvariant##examples"}{...}
+{viewerjumpto "Author" "checkinvariant##author"}{...}
+{viewerjumpto "Website" "checkinvariant##website"}{...}
 {title:Title}
 
 {phang}
@@ -40,19 +43,22 @@
 
 {pstd}In the repository where the {cmd:checkinvariant} is maintained, you can find a file with tests for the command that should verify that it is working properly. This can be particularly useful if you intend to make extensions to the command.
 
-{title:Example}
+{marker examples}{...}
+{title:Examples}
 
 sysuse auto, clear
 gen brand = make
 replace brand = regexr(brand, " .*", "")
 checkinvariant, by(brand)
 
+{marker author}{...}
 {title:Author}
 
 {pstd}Luís Fonseca, London Business School.
 
 {pstd}Website: {browse "https://luispfonseca.com"}
 
+{marker website}{...}
 {title:Website}
 
 {pstd}{cmd:checkinvariant} is maintained at {browse "https://github.com/luispfonseca/stata-misc"}{p_end}
