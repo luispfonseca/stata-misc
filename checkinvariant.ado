@@ -1,5 +1,5 @@
+*! version 1.0 10sep2019 Luís Fonseca, https://github.com/luispfonseca
 *! -checkinvariant- Check if a variable is invariant within a group
-*! Luís Fonseca, https://github.com/luispfonseca
 
 program define checkinvariant, rclass
 
