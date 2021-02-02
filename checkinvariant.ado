@@ -63,7 +63,7 @@ foreach var in `varlist' {
 		local missing_condition " | mi(`finalvar')"
 	}
 
-	cap assert `finalvar' == `first_value' `missing_condition'
+	cap assert `finalvar' == `first_value' `missing_condition' , fast
 
 	if c(rc) == 0 {
 		if "`verbose'" != "" {
@@ -71,7 +71,7 @@ foreach var in `varlist' {
 		}
 		local invariantvarlist `invariantvarlist' `var'
 		if "`fill'" != "" & "`allowmissing'" != "" {
-			cap assert `finalvar' == `first_value'
+			cap assert `finalvar' == `first_value' , fast
 			if c(rc) {
 				* gegen doesn't take strings as input, so I have to recover
 				* the nonmissing values of strings in an inefficient way
