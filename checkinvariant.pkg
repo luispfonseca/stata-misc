@@ -1,7 +1,7 @@
-v 1.0
+v 1.0.1
 d 'CHECKINVARIANT': checkinvariant
 d
-d Distribution-Date:   20190910
+d Distribution-Date:   20210202
 d License: MIT
 
 F checkinvariant.ado
